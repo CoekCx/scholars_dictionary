@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Scholars_Dictionary
 {
@@ -20,16 +9,63 @@ namespace Scholars_Dictionary
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool _isRussianChecked;
+        private bool _isSpanishChecked;
+
+        public bool IsRussianChecked
+        {
+            get => _isRussianChecked;
+            set => _isRussianChecked = value;
+        }
+        public bool IsSpanishChecked
+        {
+            get => _isSpanishChecked;
+            set => _isSpanishChecked = value;
+        }
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        // Language Selection
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkBox)
+            {
+                if (checkBox.Content.ToString().Contains("Russian"))
+                {
+                    IsRussianChecked = true;
+                }
+                else if (checkBox.Content.ToString().Contains("Spanish"))
+                {
+                    IsSpanishChecked = true;
+                }
+            }
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkBox)
+            {
+                if (checkBox.Content.ToString().Contains("Russian"))
+                {
+                    IsRussianChecked = false;
+                }
+                else if (checkBox.Content.ToString().Contains("Spanish"))
+                {
+                    IsSpanishChecked = false;
+                }
+            }
+        }
+
+        // Menu Buttons
         private void buttonStart_Click(object sender, RoutedEventArgs e)
         {
             return;
         }
 
+        // Top Bar
         private void buttonMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
