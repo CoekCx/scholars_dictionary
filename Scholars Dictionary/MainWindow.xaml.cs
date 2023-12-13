@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Scholars_Dictionary.Views;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -62,7 +63,10 @@ namespace Scholars_Dictionary
         // Menu Buttons
         private void buttonStart_Click(object sender, RoutedEventArgs e)
         {
-            return;
+            var window = new VocabularyBuilder();
+            Hide();
+            window.ShowDialog();
+            Show();
         }
 
         // Top Bar

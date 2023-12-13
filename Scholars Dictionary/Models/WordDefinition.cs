@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using Scholars_Dictionary.Enums;
 
 namespace Scholars_Dictionary.Models
 {
     public class WordDefinition
     {
         public string Word { get; set; }
-        public string Definition { get; set; }
-        public string Type { get; set; }
-        public List<string> RelatedWords { get; set; }
+        public List<string> Definitions { get; set; } = new List<string>();
+        public List<WordType> Types { get; set; } = new List<WordType>();
+        public List<string> RelatedWords { get; set; } = new List<string>();
     }
 }

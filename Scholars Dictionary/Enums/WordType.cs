@@ -1,6 +1,6 @@
 ﻿namespace Scholars_Dictionary.Enums
 {
-    public enum WordTypes
+    public enum WordType
     {
         NOUN,
         ADJECTIVE,

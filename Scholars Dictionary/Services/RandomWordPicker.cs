@@ -25,30 +25,30 @@ namespace Scholars_Dictionary.Services
         /// </summary>
         /// <param name="wordType">(optional). Specifies the type of word to be picked.</param>
         /// <returns>The randomly selected word.</returns>
-        public static string PickRandomWord(WordTypes? wordType = null)
+        public static string PickRandomWord(WordType? wordType = null)
         {
             if (wordType == null)
             {
                 // Assign a random value to wordType
-                var values = Enum.GetValues(typeof(WordTypes));
+                var values = Enum.GetValues(typeof(WordType));
                 var random = new Random();
-                wordType = (WordTypes)values.GetValue(random.Next(values.Length));
+                wordType = (WordType)values.GetValue(random.Next(values.Length));
             }
 
             List<string> lines = new List<string>();
             switch(wordType)
             {
-                case WordTypes.NOUN:
+                case WordType.NOUN:
                     var x = DataConstants.GetDataFilePath("data.noun");
                     lines = ReadLinesFromFile(DataConstants.GetDataFilePath("data.noun"));
                     break;
-                case WordTypes.VERB:
+                case WordType.VERB:
                     lines = ReadLinesFromFile(DataConstants.GetDataFilePath("data.verb"));
                     break;
-                case WordTypes.ADVERB:
+                case WordType.ADVERB:
                     lines = ReadLinesFromFile(DataConstants.GetDataFilePath("data.adv"));
                     break;
-                case WordTypes.ADJECTIVE:
+                case WordType.ADJECTIVE:
                     lines = ReadLinesFromFile(DataConstants.GetDataFilePath("data.adj"));
                     break;
             }
