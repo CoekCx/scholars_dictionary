@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Scholars_Dictionary.Enums;
 using Scholars_Dictionary.Models;
 using Scholars_Dictionary.Services;
@@ -26,26 +28,32 @@ namespace Scholars_Dictionary.Views
             LoadNextWord();
         }
 
-        private void LoadNextWord()
+        private async void LoadNextWord()
         {
             string newWord = RandomWordPicker.PickRandomWord();
 
             WordDefinition wordDefinition = new WordDefinition();
             while (wordDefinition.Definitions.Count == 0)
             {
+                newWord = RandomWordPicker.PickRandomWord();
                 wordDefinition = DefinitionService.GetDefinition(newWord);
             }
 
-            ShowResults(wordDefinition);
+            // var response = AzureTranslateAPI.TranslateText(wordDefinition.Word, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.RUSSIAN.GetStringValue());
+            // string json = await response;
+            // 
+            // var translatedText = (JArray.Parse(json))[0]["translations"][0]["text"].ToString();
+
+            ShowResultsEng(wordDefinition);
         }
 
         private void LoadWord(string word)
         {
             WordDefinition wordDefinition = DefinitionService.GetDefinition(word);
-            ShowResults(wordDefinition);
+            ShowResultsEng(wordDefinition);
         }
 
-        private void ShowResults(WordDefinition wordDefinition)
+        private void ShowResultsEng(WordDefinition wordDefinition)
         {
             // Create a new FlowDocument
             FlowDocument flowDocument = new FlowDocument();
@@ -74,7 +82,6 @@ namespace Scholars_Dictionary.Views
                 index++;
             }
 
-            // Add links for related words
             paragraph.Inlines.Add(new LineBreak());
             FormatRelatedWords(paragraph, wordDefinition.RelatedWords);
 
@@ -85,12 +92,10 @@ namespace Scholars_Dictionary.Views
 
         private void FormatText(Paragraph paragraph, string inputString)
         {
-            // Split the input string by bullet points
             string[] bulletPoints = inputString.Split(new[] { " • " }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (string bulletPoint in bulletPoints)
             {
-                // Split each bullet point by semicolons to separate the parts
                 string[] parts = bulletPoint.Split(';');
 
                 int maxBoldCharactersPerLine = 88;
@@ -98,10 +103,8 @@ namespace Scholars_Dictionary.Views
 
                 foreach (string part in parts)
                 {
-                    // Check if the part contains quotes
                     if (part.Contains("\""))
                     {
-                        // If it contains quotes, make it italic
                         string[] lines = SplitTextByLineLength(part, maxItalicCharactersPerLine);
                         int index = 0;
                         foreach (string line in lines)
@@ -117,7 +120,6 @@ namespace Scholars_Dictionary.Views
                     }
                     else
                     {
-                        // If it doesn't contain quotes, make it bold
                         string[] lines = SplitTextByLineLength(part, maxBoldCharactersPerLine);
                         int index = 0;
                         foreach (string line in lines)
@@ -152,17 +154,11 @@ namespace Scholars_Dictionary.Views
 
         private void AddClickableLink(Paragraph paragraph, string linkText, Action onClickAction)
         {
-            // Create a new Hyperlink
             Hyperlink hyperlink = new Hyperlink(new Run(linkText));
-
-            // Set the Click event handler
             hyperlink.Click += (sender, e) => onClickAction.Invoke();
-
-            // Create a new Paragraph and add the Hyperlink to it
             paragraph.Inlines.Add(hyperlink);
         }
 
-        // Helper method to split text into lines based on maximum characters per line
         private string[] SplitTextByLineLength(string text, int maxCharacters)
         {
             List<string> lines = new List<string>();

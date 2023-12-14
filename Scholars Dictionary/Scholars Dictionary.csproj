@@ -72,6 +72,7 @@
     <Compile Include="Enums\WordType.cs" />
     <Compile Include="Models\WordDefinition.cs" />
     <Compile Include="Services\DefinitionService.cs" />
+    <Compile Include="Services\AzureTranslateAPI.cs" />
     <Compile Include="Services\RandomWordPicker.cs" />
     <Compile Include="Views\VocabularyBuilder.xaml.cs">
       <DependentUpon>VocabularyBuilder.xaml</DependentUpon>

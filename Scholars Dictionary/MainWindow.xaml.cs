@@ -1,4 +1,5 @@
 ﻿using Scholars_Dictionary.Views;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -66,7 +67,11 @@ namespace Scholars_Dictionary
             var window = new VocabularyBuilder();
             Hide();
             window.ShowDialog();
-            Show();
+            try
+            {
+                Show();
+            }
+            catch (Exception) { }
         }
 
         // Top Bar

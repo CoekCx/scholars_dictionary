@@ -107,13 +107,46 @@
                     <!--Background-->
                     <Image Source="../Assets/Images/Main Menu/background.jpg" Stretch="UniformToFill" Grid.RowSpan="7" Grid.ColumnSpan="3"/>
 
-                    <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5" Background="Red"
+                    <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
                             Grid.RowSpan="3" Grid.ColumnSpan="2"
                             Grid.Row="1" Grid.Column="0"
                             Width="750">
                         <RichTextBox x:Name="englishRTB" IsDocumentEnabled="True" Focusable="False" Cursor="Arrow"
                                      Background="#EBDEF0"
                                      Margin="0,0,0,0"
+                                     Padding="20">
+                            <RichTextBox.Resources>
+                                <Style TargetType="Hyperlink">
+                                    <Setter Property="Foreground" Value="{StaticResource Secondary}" />
+                                </Style>
+                            </RichTextBox.Resources>
+                            <FlowDocument>
+                            </FlowDocument>
+                        </RichTextBox>
+                        <Border.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="{StaticResource Secondary}" />
+                                <Setter Property="BorderThickness" Value="1.5" />
+                                <Style.Triggers>
+                                    <Trigger Property="Border.IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Secondary}" />
+                                    </Trigger>
+                                    <Trigger Property="Border.IsMouseDirectlyOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Secondary}" />
+                                    </Trigger>
+                                    <Trigger Property="Border.IsFocused" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Secondary}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Resources>
+                    </Border>
+
+                    <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
+                            Grid.Row="1" Grid.Column="2"
+                            Margin="0,0,50,0">
+                        <RichTextBox x:Name="russianRTB" IsDocumentEnabled="True" Focusable="False" Cursor="Arrow"
+                                     Background="#EBDEF0"
                                      Padding="20">
                             <RichTextBox.Resources>
                                 <Style TargetType="Hyperlink">
