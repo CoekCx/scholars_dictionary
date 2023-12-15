@@ -9,5 +9,13 @@ namespace Scholars_Dictionary.Models
         public List<string> Definitions { get; set; } = new List<string>();
         public List<WordType> Types { get; set; } = new List<WordType>();
         public List<string> RelatedWords { get; set; } = new List<string>();
+
+        public void CleanUpName()
+        {
+            if (Word.Contains("_"))
+            {
+                Word = Word.Replace('_', ' ');
+            }
+        }
     }
 }

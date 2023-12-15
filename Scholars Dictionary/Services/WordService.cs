@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Scholars_Dictionary.Constants;
 using Scholars_Dictionary.Enums;
+using Scholars_Dictionary.Models;
 
 namespace Scholars_Dictionary.Services
 {
@@ -12,7 +13,7 @@ namespace Scholars_Dictionary.Services
     /// It employs a method called PickRandomWord, which allows users to specify a desired word type or, if left unspecified, randomly selects one.
     /// The class reads word data from external files, skips irrelevant lines, and picks a random word from the remaining lines.
     /// </summary>
-    public static class RandomWordPicker
+    public static class WordService
     {
         private static readonly Random random = new Random();
 
@@ -25,7 +26,7 @@ namespace Scholars_Dictionary.Services
         /// </summary>
         /// <param name="wordType">(optional). Specifies the type of word to be picked.</param>
         /// <returns>The randomly selected word.</returns>
-        public static string PickRandomWord(WordType? wordType = null)
+        public static WordDefinition PickRandomWord(WordType? wordType = null)
         {
             if (wordType == null)
             {
@@ -63,16 +64,20 @@ namespace Scholars_Dictionary.Services
             string[] lineParts = randomLine.Split(' ');
             if (lineParts.Length < 5)
             {
-                return string.Empty;
+                return PickRandomWord(wordType);
             }
-
             string retVal = lineParts[4];
-            if(!retVal.Contains("_"))
-            {
-                return retVal;
-            }
 
-            return PickRandomWord(wordType);
+            // Check if word has definition in database
+            var wordDefinition = DefinitionService.GetDefinition(retVal);
+            if (wordDefinition.Definitions.Count == 0)
+            {
+                // Get a new word which will have a definition
+                return PickRandomWord(wordType);
+            }
+            wordDefinition.CleanUpName();
+
+            return wordDefinition;
         }
 
         /// <summary>

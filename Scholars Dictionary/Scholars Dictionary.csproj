@@ -73,7 +73,7 @@
     <Compile Include="Models\WordDefinition.cs" />
     <Compile Include="Services\DefinitionService.cs" />
     <Compile Include="Services\AzureTranslateAPI.cs" />
-    <Compile Include="Services\RandomWordPicker.cs" />
+    <Compile Include="Services\WordService.cs" />
     <Compile Include="Views\VocabularyBuilder.xaml.cs">
       <DependentUpon>VocabularyBuilder.xaml</DependentUpon>
     </Compile>

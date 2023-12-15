@@ -12,6 +12,7 @@ namespace Scholars_Dictionary.Services
         {
             Dictionary<string, List<Definition>> definitions = DictionaryHelper.GetDefinition(word);
             WordDefinition wordDefinition = FormatResults(word, definitions);
+			wordDefinition.CleanUpName();
 			return wordDefinition;
         }
 
