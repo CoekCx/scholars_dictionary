@@ -13,7 +13,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <Grid>
-                        <Border x:Name="Border" Background="White" BorderBrush="Gray" BorderThickness="1" CornerRadius="2">
+                        <Border x:Name="Border" Background="Transparent" BorderBrush="Gray" BorderThickness="0" CornerRadius="2">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
@@ -30,14 +30,12 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="Transparent" />
                             <Setter TargetName="CheckBackground" Property="Visibility" Value="Visible" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="LightGray" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="Border" Property="Background" Value="LightGray" />
-                            <Setter Property="Foreground" Value="Gray" />
+                            <Setter TargetName="Border" Property="Opacity" Value="0.85"/>
+                            <Setter Property="Foreground" Value="Transparent" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

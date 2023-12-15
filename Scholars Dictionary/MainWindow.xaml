@@ -111,48 +111,12 @@
                     <Image Source="Assets/Images/Main Menu/dictionary.png" Grid.Row="1" Grid.Column="1"/>
                     
                     <!--Select Language-->
-                    <Image Source="Assets/Images/Main Menu/splash.png"
+                    <!--<Image Source="Assets/Images/Main Menu/splash.png"
                            Stretch="Uniform"
                            Grid.RowSpan="2" Grid.ColumnSpan="2"
                            Grid.Row="0" Grid.Column="3"
                            Margin="100,0,0,25"
-                           />
-                    <StackPanel Orientation="Vertical"
-                                Margin="0,0,40,0"
-                                Width="260"
-                                HorizontalAlignment="Right" VerticalAlignment="Top"
-                                Grid.Row="1" Grid.Column="2">
-                        <Label Content="Select Languages:"
-                               HorizontalAlignment="Center"
-                               FontSize="30" FontFamily="Bahnschrift SemiLight"/>
-
-                        <!-- Russian -->
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <CheckBox Content="Russian  "
-                                      FontSize="22" FontFamily="Bahnschrift Light"
-                                      Style="{StaticResource ModernCheckBoxStyle}"
-                                      VerticalAlignment="Center"
-                                      Margin="10" Padding="0,-5,0,0"
-                                 Checked="CheckBox_Checked"
-                                 Unchecked="CheckBox_Unchecked"/>
-                            <Image Source="Assets/Images/Flags/RussianFlag.png" Width="50" Height="50" />
-                        </StackPanel>
-
-                        <!-- Spanish -->
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <CheckBox Content="Spanish  "
-                                 FontSize="22" FontFamily="Bahnschrift Light"
-                                 Style="{StaticResource ModernCheckBoxStyle}"
-                                 VerticalAlignment="Center"
-                                 Margin="10" Padding="0,-5,0,0"
-                                 Checked="CheckBox_Checked"
-                                 Unchecked="CheckBox_Unchecked"/>
-                            <Image Source="Assets/Images/Flags/SpanishFlag.png" Width="50" Height="50"/>
-                        </StackPanel>
-
-
-                        <!-- Add more languages as needed -->
-                    </StackPanel>
+                           />-->
 
                     <!--Start Buttons-->
                     <Button Content="Start"

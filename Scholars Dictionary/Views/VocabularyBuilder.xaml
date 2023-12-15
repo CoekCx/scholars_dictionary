@@ -107,6 +107,7 @@
                     <!--Background-->
                     <Image Source="../Assets/Images/Main Menu/background.jpg" Stretch="UniformToFill" Grid.RowSpan="7" Grid.ColumnSpan="3"/>
 
+                    <!--English-->
                     <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
                             Grid.RowSpan="3" Grid.ColumnSpan="2"
                             Grid.Row="1" Grid.Column="0"
@@ -142,20 +143,100 @@
                         </Border.Resources>
                     </Border>
 
+                    <!--Russian-->
                     <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
                             Grid.Row="1" Grid.Column="2"
+                            Height="230"
+                            VerticalAlignment="Top"
                             Margin="0,0,50,0">
-                        <RichTextBox x:Name="russianRTB" IsDocumentEnabled="True" Focusable="False" Cursor="Arrow"
-                                     Background="#EBDEF0"
-                                     Padding="20">
-                            <RichTextBox.Resources>
-                                <Style TargetType="Hyperlink">
-                                    <Setter Property="Foreground" Value="{StaticResource Secondary}" />
-                                </Style>
-                            </RichTextBox.Resources>
-                            <FlowDocument>
-                            </FlowDocument>
-                        </RichTextBox>
+                        <StackPanel>
+                            <!--CheckBox Flag-->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <CheckBox x:Name="RussianCheckBox"
+                                    FontSize="22" FontFamily="Bahnschrift Light"
+                                    Style="{StaticResource ModernCheckBoxStyle}"
+                                    VerticalAlignment="Center" HorizontalAlignment="Right"
+                                    Checked="CheckBox_Checked"
+                                    Unchecked="CheckBox_Unchecked">
+                                    <Image Source="../Assets/Images/Flags/RussianFlag.png"
+                                           Width="65" Height="65"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,3,10,3"/>
+                                </CheckBox>
+                            </StackPanel>
+                            
+                            <RichTextBox x:Name="russianRTB" IsDocumentEnabled="True" Focusable="False" Cursor="Arrow"
+                                         Background="#EBDEF0"
+                                         BorderThickness="0"
+                                         Height="155"
+                                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                         Padding="20,25,20,20">
+                                <RichTextBox.Resources>
+                                    <Style TargetType="Hyperlink">
+                                        <Setter Property="Foreground" Value="{StaticResource Secondary}" />
+                                    </Style>
+                                </RichTextBox.Resources>
+                                <FlowDocument>
+                                </FlowDocument>
+                            </RichTextBox>
+                        </StackPanel>
+                        <Border.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="{StaticResource Secondary}" />
+                                <Setter Property="BorderThickness" Value="1.5" />
+                                <Style.Triggers>
+                                    <Trigger Property="Border.IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Secondary}" />
+                                    </Trigger>
+                                    <Trigger Property="Border.IsMouseDirectlyOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Secondary}" />
+                                    </Trigger>
+                                    <Trigger Property="Border.IsFocused" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource Secondary}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Resources>
+                    </Border>
+
+                    <!--Spanish-->
+                    <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
+                            Grid.RowSpan="3"
+                            Grid.Row="1" Grid.Column="2"
+                            Height="230"
+                            VerticalAlignment="Top"
+                            Margin="0,240,50,0">
+                        <StackPanel>
+                            <!--CheckBox Flag-->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <CheckBox x:Name="SpanishCheckBox"
+                                    FontSize="22" FontFamily="Bahnschrift Light"
+                                    Style="{StaticResource ModernCheckBoxStyle}"
+                                    VerticalAlignment="Center" HorizontalAlignment="Right"
+                                    Checked="CheckBox_Checked"
+                                    Unchecked="CheckBox_Unchecked">
+                                    <Image Source="../Assets/Images/Flags/SpanishFlag.png"
+                                           Width="65" Height="65"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,3,10,3"/>
+                                </CheckBox>
+                            </StackPanel>
+
+                                         <!--Background="#EBDEF0"-->
+                            <RichTextBox x:Name="spanishRTB" IsDocumentEnabled="True" Focusable="False" Cursor="Arrow"
+                                         Background="#EBDEF0"
+                                         BorderThickness="0"
+                                         Height="155"
+                                         Padding="20,25,20,20">
+                                <RichTextBox.Resources>
+                                    <Style TargetType="Hyperlink">
+                                        <Setter Property="Foreground" Value="{StaticResource Secondary}" />
+                                    </Style>
+                                </RichTextBox.Resources>
+                                <FlowDocument>
+                                </FlowDocument>
+                            </RichTextBox>
+                        </StackPanel>
                         <Border.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="BorderBrush" Value="{StaticResource Secondary}" />
