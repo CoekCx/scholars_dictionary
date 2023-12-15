@@ -92,8 +92,8 @@
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="0.5*"/>
-                        <RowDefinition Height="4*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="4*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
@@ -108,10 +108,52 @@
                     <!--Background-->
                     <Image Source="../Assets/Images/Main Menu/background.jpg" Stretch="UniformToFill" Grid.RowSpan="7" Grid.ColumnSpan="3"/>
 
+                    <!--Search Bar-->
+                    <Border
+                        BorderBrush="Black" BorderThickness="1"
+                        Background="WhiteSmoke"
+                        Grid.Row="0"
+                        Grid.RowSpan="2" Grid.ColumnSpan="2"
+                        Margin="0,0,0,0"
+                        VerticalAlignment="Center" HorizontalAlignment="Center"
+                        Width="750" Height="50"
+                        CornerRadius="10">
+                        <TextBox x:Name="searchTxtBox"
+                                 Background="Transparent" BorderThickness="0"
+                                 VerticalContentAlignment="Center"
+                                 Padding="15,5,0,0"
+                                 FontSize="22" FontFamily="Bahnschrift Light"
+                                 GotFocus="SearchGotFocus" LostFocus="SearchLostFocus"
+                                 KeyDown="SearchTextBox_KeyDown"
+                                 PreviewTextInput="SearchTextBox_PreviewTextInput"/>
+                    </Border>
+
+                    <!--Search Button-->
+                    <Button x:Name="SearchBtn"
+                            Grid.RowSpan="2"
+                        Grid.Row="0" Grid.Column="2"
+                        Width="165" Height="40"
+                        Margin="0,0,15,0"
+                        FontSize="18" FontWeight="Medium"
+                        VerticalAlignment="Center" HorizontalAlignment="Left"
+                        Style="{StaticResource classicButton}"
+                        Click="LookUp_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Search"
+                                Margin="0,0,10,0"
+                                Width="20" Height="20"
+                                Style="{StaticResource classicButtonIcon}"/>
+                            <TextBlock Text="Look up"
+                                Margin="0,0,5,0"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                FontSize="22" FontFamily="Bahnschrift SemiLight"/>
+                        </StackPanel>
+                    </Button>
+
                     <!--English Speaker-->
                     <Image Source="../Assets/Images/Speakers/speaker-1.png" Panel.ZIndex="1"
                            x:Name="EnglishSpeaker"
-                           Grid.Row="1" Grid.Column="1"
+                           Grid.Row="2" Grid.Column="1"
                            Height="75" Width="75"
                            Margin="180,0,0,205"
                            MouseLeftButtonDown="Speak"
@@ -120,7 +162,7 @@
                     <!--English-->
                     <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
                             Grid.RowSpan="3" Grid.ColumnSpan="2"
-                            Grid.Row="1" Grid.Column="0"
+                            Grid.Row="2" Grid.Column="0"
                             Width="750">
                         <RichTextBox x:Name="englishRTB" IsDocumentEnabled="True" Focusable="False" Cursor="Arrow"
                                      Background="#EBDEF0"
@@ -156,7 +198,7 @@
                     <!--Russian Speaker-->
                     <Image Source="../Assets/Images/Speakers/speaker-2.png" Panel.ZIndex="1"
                            x:Name="RussianSpeaker"
-                           Grid.Row="1" Grid.Column="2"
+                           Grid.Row="2" Grid.Column="2"
                            Height="65" Width="65"
                            Margin="-340,0,0,230"
                            MouseLeftButtonDown="Speak"
@@ -164,7 +206,7 @@
 
                     <!--Russian-->
                     <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
-                            Grid.Row="1" Grid.Column="2"
+                            Grid.Row="2" Grid.Column="2"
                             Height="230"
                             VerticalAlignment="Top"
                             Margin="0,0,50,0">
@@ -221,7 +263,7 @@
                     <!--Spanish Speaker-->
                     <Image Source="../Assets/Images/Speakers/speaker-3.png" Panel.ZIndex="1"
                            x:Name="SpanishSpeaker"
-                           Grid.Row="1" Grid.Column="2"
+                           Grid.Row="2" Grid.Column="2"
                            Height="65" Width="65"
                            Margin="-340,0,0,-250"
                            MouseLeftButtonDown="Speak"
@@ -230,7 +272,7 @@
                     <!--Spanish-->
                     <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
                             Grid.RowSpan="3"
-                            Grid.Row="1" Grid.Column="2"
+                            Grid.Row="2" Grid.Column="2"
                             Height="230"
                             VerticalAlignment="Top"
                             Margin="0,240,50,0">
@@ -285,20 +327,45 @@
                     </Border>
 
                     <!--Start Buttons-->
-                    <Button Content="Next Word"
-                            Grid.Row="4" Grid.Column="1"
-                            Width="225"
+                    <Button
+                            Grid.RowSpan="2"
+                            Grid.Row="5" Grid.Column="0"
+                            Width="225" Height="40"
                             FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
-                            Click="buttonNextWord_Click"
-                            Style="{StaticResource classicButton}" FontStretch="UltraCondensed" />
+                            Click="buttonGenerateWord_Click"
+                        Margin="115,0,0,0"
+                            Style="{StaticResource classicButton}" FontStretch="UltraCondensed">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Dice"
+                                Margin="0,0,10,0"
+                                Style="{StaticResource classicButtonIcon}"/>
+                            <TextBlock Text="Roll new word"
+                                Margin="0,0,5,0"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                FontSize="22" FontFamily="Bahnschrift SemiLight"/>
+                        </StackPanel>
+                    </Button>
 
                     <!--Exit Buttons-->
-                    <Button Content="Main Menu"
+                    <Button
+                            Grid.RowSpan="2"
                             Grid.Row="5" Grid.Column="1"
-                            Width="225"
+                            Width="225" Height="40"
                             FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
                             Click="buttonBack_Click"
-                            Style="{StaticResource classicButton}" FontStretch="UltraCondensed" />
+                        Margin="0,0,115,0"
+                            Style="{StaticResource classicButton}" FontStretch="UltraCondensed">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="ArrowLeftLong"
+                                Margin="0,0,10,0"
+                                Width="20" Height="20"
+                                Style="{StaticResource classicButtonIcon}"/>
+                            <TextBlock Text="Main Menu"
+                                Margin="0,0,5,0"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                FontSize="22" FontFamily="Bahnschrift SemiLight"/>
+                        </StackPanel>
+                    </Button>
                 </Grid>
             </Grid>
         </Border>

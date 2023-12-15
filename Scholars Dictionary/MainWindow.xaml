@@ -92,10 +92,10 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="0.5*"/>
                         <RowDefinition Height="4*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="0.5*"/>
+                        <RowDefinition Height="1.25*"/>
+                        <RowDefinition Height="1.25*"/>
+                        <RowDefinition Height="1.25*"/>
                         <RowDefinition Height="0.5*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -118,21 +118,55 @@
                            Margin="100,0,0,25"
                            />-->
 
-                    <!--Start Buttons-->
-                    <Button Content="Start"
-                            Grid.Row="3" Grid.Column="1"
-                            Width="225"
+                    <!--Explore Buttons-->
+                    <Button Grid.Row="3" Grid.Column="1"
+                            Width="225" Height="40"
                             FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
                             Click="buttonStart_Click"
-                            Style="{StaticResource classicButton}" FontStretch="UltraCondensed" />
+                            Style="{StaticResource classicButton}" FontStretch="UltraCondensed">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Hiking"
+                                Margin="0,0,5,0"
+                                Width="18" Height="18"
+                                Style="{StaticResource classicButtonIcon}"/>
+                            <TextBlock Text="Explore"
+                                    Margin="0,0,5,0"
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                    FontSize="22" FontFamily="Bahnschrift SemiLight"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!--Exit Button-->
+                    <Button Grid.Row="4" Grid.Column="1"
+                            Width="225" Height="40"
+                            FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
+                            Click="buttonMyDictionary_Click"
+                            Style="{StaticResource classicButton}" FontStretch="UltraCondensed">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Book"
+                                Margin="0,0,5,0"
+                                Width="18" Height="18"
+                                Style="{StaticResource classicButtonIcon}"/>
+                            <TextBlock Text="My Dictionary"
+                                    Margin="0,0,5,0"
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                    FontSize="22" FontFamily="Bahnschrift SemiLight"/>
+                        </StackPanel>
+                    </Button>
 
                     <!--Exit Buttons-->
-                    <Button Content="Exit"
-                            Grid.Row="4" Grid.Column="1"
-                            Width="225"
+                    <Button Grid.Row="5" Grid.Column="1"
+                            Width="225" Height="40"
                             FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
                             Click="buttonClose_Click"
-                            Style="{StaticResource classicButton}" FontStretch="UltraCondensed" />
+                            Style="{StaticResource classicButton}" FontStretch="UltraCondensed">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Quit"
+                                    Margin="0,0,5,0"
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                    FontSize="22" FontFamily="Bahnschrift SemiLight"/>
+                        </StackPanel>
+                    </Button>
                 </Grid>
             </Grid>
         </Border>

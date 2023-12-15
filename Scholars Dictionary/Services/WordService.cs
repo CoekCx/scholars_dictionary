@@ -70,7 +70,7 @@ namespace Scholars_Dictionary.Services
 
             // Check if word has definition in database
             var wordDefinition = DefinitionService.GetDefinition(retVal);
-            if (wordDefinition.Definitions.Count == 0)
+            if (!wordDefinition.IsDefined())
             {
                 // Get a new word which will have a definition
                 return PickRandomWord(wordType);

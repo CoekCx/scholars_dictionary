@@ -17,5 +17,10 @@ namespace Scholars_Dictionary.Models
                 Word = Word.Replace('_', ' ');
             }
         }
+
+        public bool IsDefined()
+        {
+            return Definitions.Count > 0;
+        }
     }
 }

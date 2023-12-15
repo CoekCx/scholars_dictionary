@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Newtonsoft.Json;
+using System.Windows.Media;
 using Newtonsoft.Json.Linq;
 using Scholars_Dictionary.Enums;
 using Scholars_Dictionary.Models;
@@ -38,23 +38,36 @@ namespace Scholars_Dictionary.Views
         public VocabularyBuilder()
         {
             InitializeComponent();
+
             EnglishSpeaker.Visibility = Visibility.Hidden;
             RussianSpeaker.Visibility = Visibility.Hidden;
             SpanishSpeaker.Visibility = Visibility.Hidden;
+
+            searchTxtBox.Text = "Search...";
+            searchTxtBox.Foreground = Brushes.Gray;
         }
 
         // Buttons
-        private void buttonNextWord_Click(object sender, RoutedEventArgs e)
+        private void buttonGenerateWord_Click(object sender, RoutedEventArgs e)
         {
             LoadWord();
         }
 
-        private void LoadWord(string word = "")
+        private void LoadWord(string word = "", bool clearSearch = false)
         {
-            ClearScreen();
+            ClearScreen(clearSearch: clearSearch);
 
             WordDefinition wordDefinition = String.IsNullOrEmpty(word) ? WordService.PickRandomWord() : DefinitionService.GetDefinition(word.Replace(' ', '_'));
             CurrentEnglishWord = wordDefinition.Word;
+
+            if (!wordDefinition.IsDefined())
+            {
+                ShowUndefinedResult(wordDefinition);
+                EnglishSpeaker.Visibility = Visibility.Hidden;
+                RussianSpeaker.Visibility = Visibility.Hidden;
+                SpanishSpeaker.Visibility = Visibility.Hidden;
+                return;
+            }
 
             TranslateWord(wordDefinition);
             ShowResultsEng(wordDefinition);
@@ -62,6 +75,22 @@ namespace Scholars_Dictionary.Views
         }
 
         // Word Definition
+        private void ShowUndefinedResult(WordDefinition wordDefinition)
+        {
+            FlowDocument flowDocument = new FlowDocument();
+
+            Paragraph paragraph = new Paragraph();
+            paragraph.FontFamily = new System.Windows.Media.FontFamily("Bahnschrift SemiLight");
+            paragraph.FontSize = 22;
+
+            Run run1 = new Run("No definition found for the term ");
+            Run run2 = new Run($"\"{wordDefinition.Word}\"") { FontStyle = FontStyles.Italic };
+            paragraph.Inlines.Add(run1);
+            paragraph.Inlines.Add(run2);
+
+            flowDocument.Blocks.Add(paragraph);
+            englishRTB.Document = flowDocument;
+        }
         private void ShowResultsEng(WordDefinition wordDefinition)
         {
             // Create a new FlowDocument
@@ -273,6 +302,11 @@ namespace Scholars_Dictionary.Views
                 {
                     IsSpanishChecked = true;
                 }
+
+                if (!String.IsNullOrEmpty(CurrentEnglishWord))
+                {
+                    TranslateWord(new WordDefinition() { Word = CurrentEnglishWord });
+                }
             }
         }
 
@@ -283,16 +317,20 @@ namespace Scholars_Dictionary.Views
                 if (checkBox.Name.ToString().Contains("Russian"))
                 {
                     IsRussianChecked = false;
+                    russianRTB.Document.Blocks.Clear();
+                    RussianSpeaker.Visibility = Visibility.Hidden;
                 }
                 else if (checkBox.Name.ToString().Contains("Spanish"))
                 {
                     IsSpanishChecked = false;
+                    spanishRTB.Document.Blocks.Clear();
+                    SpanishSpeaker.Visibility = Visibility.Hidden;
                 }
             }
         }
 
         // Helper Methods
-        private void ClearScreen(bool clearEnglish = false)
+        private void ClearScreen(bool clearEnglish = false, bool clearSearch = false)
         {
             if (clearEnglish)
             {
@@ -300,6 +338,11 @@ namespace Scholars_Dictionary.Views
             }
             spanishRTB.Document.Blocks.Clear();
             russianRTB.Document.Blocks.Clear();
+
+            if (clearSearch)
+            {
+                ClearSearch();
+            }
         }
 
         // Top Bar
@@ -322,6 +365,69 @@ namespace Scholars_Dictionary.Views
         {
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
+        }
+
+        // Search
+        private void SearchGotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox searchBox = (TextBox)sender;
+
+            if (searchBox.Text == "Search...")
+            {
+                searchBox.Text = string.Empty;
+                searchBox.Foreground = Brushes.Black;
+            }
+        }
+
+        private void SearchLostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox searchBox = (TextBox)sender;
+
+            if (string.IsNullOrWhiteSpace(searchBox.Text))
+            {
+                ClearSearch();
+            }
+        }
+
+        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && !String.IsNullOrEmpty(searchTxtBox.Text) && !String.Equals(searchTxtBox.Text, "Search..."))
+            {
+                // Enter key pressed
+                Search();
+            }
+        }
+
+        private void SearchTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Validate that the entered character is a letter
+            if (!char.IsLetter(e.Text, 0))
+            {
+                e.Handled = true; // Discard the non-letter character
+            }
+        }
+
+        private void LookUp_Click(object sender, RoutedEventArgs e)
+        {
+            if(!String.IsNullOrEmpty(searchTxtBox.Text) && !String.Equals(searchTxtBox.Text, "Search..."))
+            {
+                Search();
+            }
+        }
+
+        private void Search()
+        {
+            string searchTerm = searchTxtBox.Text;
+
+            LoadWord(searchTerm, true);
+
+            SearchBtn.Focus();
+        }
+
+        private void ClearSearch()
+        {
+            searchTxtBox.Text = "Search...";
+            searchTxtBox.Foreground = Brushes.Gray;
         }
     }
 }

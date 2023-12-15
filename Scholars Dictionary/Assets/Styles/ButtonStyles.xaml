@@ -259,8 +259,8 @@
     <!--Classic button icon-->
     <Style x:Key="classicButtonIcon" TargetType="fa:IconImage">
         <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
-        <Setter Property="Width" Value="15"/>
-        <Setter Property="Height" Value="15"/>
+        <Setter Property="Width" Value="25"/>
+        <Setter Property="Height" Value="25"/>
     </Style>
 
     

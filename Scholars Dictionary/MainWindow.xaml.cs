@@ -29,6 +29,11 @@ namespace Scholars_Dictionary
             catch (Exception) { }
         }
 
+        private void buttonMyDictionary_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         // Top Bar
         private void buttonMinimize_Click(object sender, RoutedEventArgs e)
         {
