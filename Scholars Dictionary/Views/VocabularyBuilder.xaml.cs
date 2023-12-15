@@ -31,9 +31,16 @@ namespace Scholars_Dictionary.Views
             set => _isSpanishChecked = value;
         }
 
+        public string CurrentEnglishWord { get; set; } = "";
+        public string CurrentRussianWord { get; set; } = "";
+        public string CurrentSpanishWord { get; set; } = "";
+
         public VocabularyBuilder()
         {
             InitializeComponent();
+            EnglishSpeaker.Visibility = Visibility.Hidden;
+            RussianSpeaker.Visibility = Visibility.Hidden;
+            SpanishSpeaker.Visibility = Visibility.Hidden;
         }
 
         // Buttons
@@ -47,9 +54,11 @@ namespace Scholars_Dictionary.Views
             ClearScreen();
 
             WordDefinition wordDefinition = String.IsNullOrEmpty(word) ? WordService.PickRandomWord() : DefinitionService.GetDefinition(word.Replace(' ', '_'));
+            CurrentEnglishWord = wordDefinition.Word;
 
             TranslateWord(wordDefinition);
             ShowResultsEng(wordDefinition);
+            EnglishSpeaker.Visibility = Visibility.Visible;
         }
 
         // Word Definition
@@ -185,12 +194,28 @@ namespace Scholars_Dictionary.Views
                 var response = await AzureTranslateAPI.TranslateText(wordDefinition.Word, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.RUSSIAN.GetStringValue());
                 var translatedText = (JArray.Parse(response))[0]["translations"][0]["text"].ToString();
                 ShowResultTranslate(translatedText, SupportedLanguages.RUSSIAN);
+
+                CurrentRussianWord = translatedText;
+                RussianSpeaker.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                CurrentRussianWord = "";
+                RussianSpeaker.Visibility = Visibility.Hidden;
             }
             if (IsSpanishChecked)
             {
                 var response = await AzureTranslateAPI.TranslateText(wordDefinition.Word, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.SPANISH.GetStringValue());
                 var translatedText = (JArray.Parse(response))[0]["translations"][0]["text"].ToString();
                 ShowResultTranslate(translatedText, SupportedLanguages.SPANISH);
+
+                CurrentSpanishWord = translatedText;
+                SpanishSpeaker.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                CurrentSpanishWord = "";
+                SpanishSpeaker.Visibility = Visibility.Hidden;
             }
         }
 
@@ -212,6 +237,26 @@ namespace Scholars_Dictionary.Views
                 case SupportedLanguages.SPANISH:
                     spanishRTB.Document = document;
                     break;
+            }
+        }
+
+        // Voice
+        private void Speak(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Image img)
+            {
+                switch (img.Name)
+                {
+                    case "EnglishSpeaker":
+                        AzureTTSAPI.TextToSpeech(CurrentEnglishWord, SupportedLanguages.ENGLISH);
+                        break;
+                    case "RussianSpeaker":
+                        AzureTTSAPI.TextToSpeech(CurrentRussianWord, SupportedLanguages.RUSSIAN);
+                        break;
+                    case "SpanishSpeaker":
+                        AzureTTSAPI.TextToSpeech(CurrentSpanishWord, SupportedLanguages.SPANISH);
+                        break;
+                }
             }
         }
 
@@ -278,6 +323,5 @@ namespace Scholars_Dictionary.Views
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
         }
-
     }
 }

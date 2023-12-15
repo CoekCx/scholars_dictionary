@@ -15,6 +15,7 @@
                 <ResourceDictionary Source="../Assets/Styles/ButtonStyles.xaml"/>
                 <ResourceDictionary Source="../Assets/Styles/UIColors.xaml"/>
                 <ResourceDictionary Source="../Assets/Styles/CheckBoxStyles.xaml"/>
+                <ResourceDictionary Source="../Assets/Styles/ImageAnimationStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -107,6 +108,15 @@
                     <!--Background-->
                     <Image Source="../Assets/Images/Main Menu/background.jpg" Stretch="UniformToFill" Grid.RowSpan="7" Grid.ColumnSpan="3"/>
 
+                    <!--English Speaker-->
+                    <Image Source="../Assets/Images/Speakers/speaker-1.png" Panel.ZIndex="1"
+                           x:Name="EnglishSpeaker"
+                           Grid.Row="1" Grid.Column="1"
+                           Height="75" Width="75"
+                           Margin="180,0,0,205"
+                           MouseLeftButtonDown="Speak"
+                           Style="{StaticResource ImageHoverStyle}"/>
+                    
                     <!--English-->
                     <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
                             Grid.RowSpan="3" Grid.ColumnSpan="2"
@@ -142,6 +152,15 @@
                             </Style>
                         </Border.Resources>
                     </Border>
+
+                    <!--Russian Speaker-->
+                    <Image Source="../Assets/Images/Speakers/speaker-2.png" Panel.ZIndex="1"
+                           x:Name="RussianSpeaker"
+                           Grid.Row="1" Grid.Column="2"
+                           Height="65" Width="65"
+                           Margin="-340,0,0,230"
+                           MouseLeftButtonDown="Speak"
+                           Style="{StaticResource ImageHoverStyle}"/>
 
                     <!--Russian-->
                     <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
@@ -199,6 +218,15 @@
                         </Border.Resources>
                     </Border>
 
+                    <!--Spanish Speaker-->
+                    <Image Source="../Assets/Images/Speakers/speaker-3.png" Panel.ZIndex="1"
+                           x:Name="SpanishSpeaker"
+                           Grid.Row="1" Grid.Column="2"
+                           Height="65" Width="65"
+                           Margin="-340,0,0,-250"
+                           MouseLeftButtonDown="Speak"
+                           Style="{StaticResource ImageHoverStyle}"/>
+                    
                     <!--Spanish-->
                     <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
                             Grid.RowSpan="3"
