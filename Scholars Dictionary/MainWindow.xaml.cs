@@ -1,4 +1,5 @@
-﻿using Scholars_Dictionary.Views;
+﻿using Scholars_Dictionary.Services;
+using Scholars_Dictionary.Views;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +15,8 @@ namespace Scholars_Dictionary
         public MainWindow()
         {
             InitializeComponent();
+
+            WordCollectionService.LoadCollection();
         }
 
         // Menu Buttons
