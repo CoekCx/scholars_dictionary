@@ -8,6 +8,8 @@ using System.Windows.Media;
 using Scholars_Dictionary.Enums;
 using Scholars_Dictionary.Models;
 using Scholars_Dictionary.Services;
+using FontAwesome.Sharp;
+using System.Threading.Tasks;
 
 namespace Scholars_Dictionary.Views
 {
@@ -31,9 +33,9 @@ namespace Scholars_Dictionary.Views
             set => _isSpanishChecked = value;
         }
 
-        public string CurrentEnglishWord { get; set; } = "";
-        public string CurrentRussianWord { get; set; } = "";
-        public string CurrentSpanishWord { get; set; } = "";
+        public WordDefinition CurrentEnglishWord { get; set; } = new WordDefinition();
+        public WordDefinition CurrentRussianWord { get; set; } = new WordDefinition();
+        public WordDefinition CurrentSpanishWord { get; set; } = new WordDefinition();
         #endregion
 
         public VocabularyBuilder()
@@ -59,7 +61,8 @@ namespace Scholars_Dictionary.Views
             ClearScreen(clearSearch: clearSearch);
 
             WordDefinition wordDefinition = String.IsNullOrEmpty(word) ? WordService.PickRandomWord() : DefinitionService.GetDefinition(word.Replace(' ', '_'));
-            CurrentEnglishWord = wordDefinition.Word;
+            CurrentEnglishWord = wordDefinition;
+            UpdateFavoriteButton();
 
             if (!wordDefinition.IsDefined())
             {
@@ -240,13 +243,13 @@ namespace Scholars_Dictionary.Views
                     var translatedWordDefinition = await AzureTranslateAPI.TranslateWordDefinition(wordDefinition, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.RUSSIAN.GetStringValue());
                     ShowResultTranslate(translatedWordDefinition, SupportedLanguages.RUSSIAN);
 
-                    CurrentRussianWord = translatedWordDefinition.Word;
+                    CurrentRussianWord = translatedWordDefinition;
                     RussianSpeaker.Visibility = Visibility.Visible;
                 }
             }
             else
             {
-                CurrentRussianWord = "";
+                CurrentRussianWord = new WordDefinition();
                 RussianSpeaker.Visibility = Visibility.Hidden;
             }
             if (IsSpanishChecked)
@@ -256,13 +259,13 @@ namespace Scholars_Dictionary.Views
                     var translatedWordDefinition = await AzureTranslateAPI.TranslateWordDefinition(wordDefinition, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.SPANISH.GetStringValue());
                     ShowResultTranslate(translatedWordDefinition, SupportedLanguages.SPANISH);
 
-                    CurrentSpanishWord = translatedWordDefinition.Word;
+                    CurrentSpanishWord = translatedWordDefinition;
                     SpanishSpeaker.Visibility = Visibility.Visible;
                 }
             }
             else
             {
-                CurrentSpanishWord = "";
+                CurrentSpanishWord = new WordDefinition();
                 SpanishSpeaker.Visibility = Visibility.Hidden;
             }
         }
@@ -300,13 +303,13 @@ namespace Scholars_Dictionary.Views
                 switch (img.Name)
                 {
                     case "EnglishSpeaker":
-                        AzureTTSAPI.TextToSpeech(CurrentEnglishWord, SupportedLanguages.ENGLISH);
+                        AzureTTSAPI.TextToSpeech(CurrentEnglishWord.Word, SupportedLanguages.ENGLISH);
                         break;
                     case "RussianSpeaker":
-                        AzureTTSAPI.TextToSpeech(CurrentRussianWord, SupportedLanguages.RUSSIAN);
+                        AzureTTSAPI.TextToSpeech(CurrentRussianWord.Word, SupportedLanguages.RUSSIAN);
                         break;
                     case "SpanishSpeaker":
-                        AzureTTSAPI.TextToSpeech(CurrentSpanishWord, SupportedLanguages.SPANISH);
+                        AzureTTSAPI.TextToSpeech(CurrentSpanishWord.Word, SupportedLanguages.SPANISH);
                         break;
                 }
             }
@@ -327,9 +330,9 @@ namespace Scholars_Dictionary.Views
                     IsSpanishChecked = true;
                 }
 
-                if (!String.IsNullOrEmpty(CurrentEnglishWord))
+                if (!String.IsNullOrEmpty(CurrentEnglishWord.Word))
                 {
-                    TranslateWord(new WordDefinition() { Word = CurrentEnglishWord });
+                    TranslateWord(CurrentEnglishWord);
                 }
             }
         }
@@ -342,12 +345,14 @@ namespace Scholars_Dictionary.Views
                 {
                     IsRussianChecked = false;
                     russianRTB.Document.Blocks.Clear();
+                    CurrentRussianWord = new WordDefinition();
                     RussianSpeaker.Visibility = Visibility.Hidden;
                 }
                 else if (checkBox.Name.ToString().Contains("Spanish"))
                 {
                     IsSpanishChecked = false;
                     spanishRTB.Document.Blocks.Clear();
+                    CurrentSpanishWord = new WordDefinition();
                     SpanishSpeaker.Visibility = Visibility.Hidden;
                 }
             }
@@ -459,9 +464,93 @@ namespace Scholars_Dictionary.Views
         #endregion
 
         #region Favorite
-        private void buttonFavorite_Click(object sender, RoutedEventArgs e)
+        private void UpdateFavoriteButton()
         {
+            if(WordCollection.WordExists(CurrentEnglishWord))
+            {
+                SetFavoritedButton();
+            }
+            else
+            {
+                UnsetFavoritedButton();
+            }
+        }
 
+        private async void buttonFavorite_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CurrentEnglishWord.IsDefined())
+            {
+                return;
+            }
+
+            bool isSaved = FavoriteTxtBlk.Text == "Saved";
+            if (!isSaved)
+            {
+                var isSavedSuccessfully = await SaveWord();
+
+                if(isSavedSuccessfully)
+                {
+                    SetFavoritedButton();
+                }
+            }
+            else
+            {
+                WordCollectionService.RemoveWord(CurrentEnglishWord.Word);
+                UnsetFavoritedButton();
+            }
+        }
+
+        private void SetFavoritedButton()
+        {
+            FavoriteIcon.Icon = IconChar.Heartbeat;
+            FavoriteIcon.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7209b7"));
+            FavoriteTxtBlk.Text = "Saved";
+        }
+
+        private void UnsetFavoritedButton()
+        {
+            FavoriteIcon.Icon = IconChar.Heart;
+            FavoriteIcon.Foreground = Brushes.Black;
+            FavoriteTxtBlk.Text = "Save";
+        }
+
+        private async Task<bool> SaveWord()
+        {
+            if (CurrentEnglishWord.IsDefined() || (!CurrentEnglishWord.IsDefined() && CurrentEnglishWord.TryDefineSelf()))
+            {
+                WordCollectionService.AddWord(SupportedLanguages.ENGLISH, CurrentEnglishWord.Word, CurrentEnglishWord);
+            }
+            else
+            {
+                return false;
+            }
+
+            if (CurrentRussianWord.IsDefined() || (!CurrentRussianWord.IsDefined() && CurrentRussianWord.TryDefineSelf()))
+            {
+                WordCollectionService.AddWord(SupportedLanguages.RUSSIAN, CurrentEnglishWord.Word, CurrentRussianWord);
+            }
+            else
+            {
+                CurrentRussianWord = await AzureTranslateAPI.TranslateWordDefinition(CurrentEnglishWord, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.RUSSIAN.GetStringValue());
+                if (CurrentRussianWord.IsDefined() || (!CurrentRussianWord.IsDefined() && CurrentRussianWord.TryDefineSelf()))
+                {
+                    WordCollectionService.AddWord(SupportedLanguages.RUSSIAN, CurrentEnglishWord.Word, CurrentRussianWord);
+                }
+            }
+            if (CurrentSpanishWord.IsDefined() || (!CurrentSpanishWord.IsDefined() && CurrentSpanishWord.TryDefineSelf()))
+            {
+                WordCollectionService.AddWord(SupportedLanguages.SPANISH, CurrentEnglishWord.Word, CurrentSpanishWord);
+            }
+            else
+            {
+                CurrentSpanishWord = await AzureTranslateAPI.TranslateWordDefinition(CurrentEnglishWord, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.SPANISH.GetStringValue());
+                if (CurrentSpanishWord.IsDefined() || (!CurrentSpanishWord.IsDefined() && CurrentSpanishWord.TryDefineSelf()))
+                {
+                    WordCollectionService.AddWord(SupportedLanguages.SPANISH, CurrentEnglishWord.Word, CurrentSpanishWord);
+                }
+            }
+
+            return true;
         }
         #endregion
     }

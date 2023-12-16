@@ -357,11 +357,11 @@
                             Click="buttonFavorite_Click"
                             Style="{StaticResource classicButton}" FontStretch="UltraCondensed">
                             <StackPanel Orientation="Horizontal">
-                                <fa:IconImage Icon="Heart"
+                                <fa:IconImage x:Name="FavoriteIcon" Icon="Heart"
                                 Margin="0,0,10,0"
                                 Width="20" Height="20"
                                 Style="{StaticResource classicButtonIcon}"/>
-                                <TextBlock Text="Save Word"
+                                <TextBlock x:Name="FavoriteTxtBlk" Text="Save"
                                 Margin="0,0,5,0"
                                 HorizontalAlignment="Stretch" VerticalAlignment="Center"
                                 FontSize="22" FontFamily="Bahnschrift SemiLight"/>

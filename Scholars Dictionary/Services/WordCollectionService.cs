@@ -13,6 +13,9 @@ namespace Scholars_Dictionary.Services
         private static string wordCollectionFileName = "wordCollection.json";
         private static string wordCollectionFilePath = DataConstants.GetDataFilePath(wordCollectionFileName);
 
+        /// <summary>
+        /// Adds a word with its definition to the word collection for a specified language.
+        /// </summary>
         public static void AddWord(SupportedLanguages language, string word, WordDefinition definition)
         {
             if (!WordCollection.Collection.ContainsKey(language))
@@ -25,6 +28,21 @@ namespace Scholars_Dictionary.Services
             SaveCollection();
         }
 
+        /// <summary>
+        /// Removes a word from the word collection for all supported languages.
+        /// </summary>
+        public static void RemoveWord(string word)
+        {
+            WordCollection.Collection[SupportedLanguages.ENGLISH].Remove(word);
+            WordCollection.Collection[SupportedLanguages.RUSSIAN].Remove(word);
+            WordCollection.Collection[SupportedLanguages.SPANISH].Remove(word);
+            LoggingService.Info($"Successfully removed the word \"{word}\"");
+            SaveCollection();
+        }
+
+        /// <summary>
+        /// Loads the word collection from a JSON file, initializing an empty collection if the file doesn't exist.
+        /// </summary>
         public static void LoadCollection()
         {
             try
@@ -35,9 +53,14 @@ namespace Scholars_Dictionary.Services
                     {
                         string json = r.ReadToEnd();
                         WordCollection.Collection = JsonConvert.DeserializeObject<Dictionary<SupportedLanguages, Dictionary<string, WordDefinition>>>(json)
-                                     ?? new Dictionary<SupportedLanguages, Dictionary<string, WordDefinition>>();
+                                     ?? new Dictionary<SupportedLanguages, Dictionary<string, WordDefinition>>()
+                                     {
+                                         [SupportedLanguages.ENGLISH] = new Dictionary<string, WordDefinition>(),
+                                         [SupportedLanguages.RUSSIAN] = new Dictionary<string, WordDefinition>(),
+                                         [SupportedLanguages.SPANISH] = new Dictionary<string, WordDefinition>()
+                                     };
                     }
-                    var wordCount = WordCollection.Collection.Count > 0 ? WordCollection.Collection[SupportedLanguages.ENGLISH].Count : 0;
+                    var wordCount = WordCollection.Collection[SupportedLanguages.ENGLISH].Count;
                     LoggingService.Info($"Successfully loaded word collection with {wordCount} words");
                 }
                 else
@@ -51,6 +74,9 @@ namespace Scholars_Dictionary.Services
             }
         }
 
+        /// <summary>
+        /// Saves the current word collection to a JSON file.
+        /// </summary>
         public static void SaveCollection()
         {
             try
@@ -69,6 +95,9 @@ namespace Scholars_Dictionary.Services
             }
         }
 
+        /// <summary>
+        /// Resets the word collection by clearing all entries.
+        /// </summary>
         public static void ResetCollection()
         {
             LoggingService.Info("Resetting the word collection");

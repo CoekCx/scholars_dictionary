@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using Scholars_Dictionary.Constants;
+using System.Diagnostics;
 
 namespace Scholars_Dictionary.Services
 {
@@ -20,6 +21,7 @@ namespace Scholars_Dictionary.Services
         {
             EnsureLogsFolderExists();
             logger.Info(message);
+            Trace.TraceInformation(message);
         }
 
         /// <summary>
@@ -32,9 +34,15 @@ namespace Scholars_Dictionary.Services
             EnsureLogsFolderExists();
 
             if (exception == null)
+            {
                 logger.Warn(message);
+                Trace.TraceWarning(message);
+            }
             else
+            {
                 logger.Warn($"{message}\n\tError: {exception.Message}\n\tSource: {exception.Source}\n\tTargetSite: {exception.TargetSite}\n\tStackTrace:\n{exception.StackTrace}", exception);
+                Trace.TraceWarning($"{message}\n\tError: {exception.Message}\n\tSource: {exception.Source}\n\tTargetSite: {exception.TargetSite}\n\tStackTrace:\n{exception.StackTrace}", exception);
+            }
         }
 
         /// <summary>
@@ -47,9 +55,15 @@ namespace Scholars_Dictionary.Services
             EnsureLogsFolderExists();
 
             if (exception == null)
+            {
                 logger.Error(message);
+                Trace.TraceError(message);
+            }
             else
+            {
                 logger.Error($"{message}\n\tError: {exception.Message}\n\tSource: {exception.Source}\n\tTargetSite: {exception.TargetSite}\n\tStackTrace:\n{exception.StackTrace}", exception);
+                Trace.TraceError($"{message}\n\tError: {exception.Message}\n\tSource: {exception.Source}\n\tTargetSite: {exception.TargetSite}\n\tStackTrace:\n{exception.StackTrace}", exception);
+            }
         }
 
         /// <summary>
