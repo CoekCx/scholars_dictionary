@@ -91,32 +91,30 @@
                       Margin="7.5,0,7.5,7.5">
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="0.5*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="4*"/>
+                        <RowDefinition Height="100"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="0.5*"/>
+                        <RowDefinition Height="100"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
                     </Grid.ColumnDefinitions>
 
                     <!--Background-->
-                    <Image Source="../Assets/Images/Main Menu/background.jpg" Stretch="UniformToFill" Grid.RowSpan="7" Grid.ColumnSpan="3"/>
+                    <Image Source="../Assets/Images/Main Menu/background.jpg" Stretch="UniformToFill" Grid.RowSpan="4" Grid.ColumnSpan="5"/>
 
                     <!--Search Bar-->
                     <Border
                         BorderBrush="Black" BorderThickness="1"
                         Background="WhiteSmoke"
-                        Grid.Row="0"
-                        Grid.RowSpan="2" Grid.ColumnSpan="2"
-                        Margin="0,0,0,0"
+                        Grid.Row="0" Grid.Column="1"
+                        Grid.ColumnSpan="2"
                         VerticalAlignment="Center" HorizontalAlignment="Center"
-                        Width="750" Height="50"
+                        Width="625" Height="50"
                         CornerRadius="10">
                         <TextBox x:Name="searchTxtBox"
                                  Background="Transparent" BorderThickness="0"
@@ -130,10 +128,9 @@
 
                     <!--Search Button-->
                     <Button x:Name="SearchBtn"
-                            Grid.RowSpan="2"
-                        Grid.Row="0" Grid.Column="2"
+                        Grid.Row="0" Grid.Column="3"
                         Width="165" Height="40"
-                        Margin="0,0,15,0"
+                        Margin="25,0,0,0"
                         FontSize="18" FontWeight="Medium"
                         VerticalAlignment="Center" HorizontalAlignment="Left"
                         Style="{StaticResource classicButton}"
@@ -153,17 +150,17 @@
                     <!--English Speaker-->
                     <Image Source="../Assets/Images/Speakers/speaker-1.png" Panel.ZIndex="1"
                            x:Name="EnglishSpeaker"
-                           Grid.Row="2" Grid.Column="1"
+                           Grid.Row="1" Grid.Column="1"
                            Height="75" Width="75"
-                           Margin="180,0,0,205"
+                           HorizontalAlignment="Right" VerticalAlignment="Top"
+                           Margin="0,10,10,0"
                            MouseLeftButtonDown="Speak"
                            Style="{StaticResource ImageHoverStyle}"/>
-                    
+
                     <!--English-->
                     <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
-                            Grid.RowSpan="3" Grid.ColumnSpan="2"
-                            Grid.Row="2" Grid.Column="0"
-                            Width="750">
+                            Grid.RowSpan="2"
+                            Grid.Row="1" Grid.Column="1">
                         <RichTextBox x:Name="englishRTB" IsDocumentEnabled="True" Focusable="False" Cursor="Arrow"
                                      Background="#EBDEF0"
                                      Margin="0,0,0,0"
@@ -198,18 +195,18 @@
                     <!--Russian Speaker-->
                     <Image Source="../Assets/Images/Speakers/speaker-2.png" Panel.ZIndex="1"
                            x:Name="RussianSpeaker"
-                           Grid.Row="2" Grid.Column="2"
-                           Height="65" Width="65"
-                           Margin="-340,0,0,230"
+                           Width="45" Height="45"
+                           Grid.Row="1" Grid.Column="3"
+                           HorizontalAlignment="Left" VerticalAlignment="Top"
+                           Margin="10,5,0,0"
                            MouseLeftButtonDown="Speak"
                            Style="{StaticResource ImageHoverStyle}"/>
 
                     <!--Russian-->
                     <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
-                            Grid.Row="2" Grid.Column="2"
-                            Height="230"
+                            Grid.Row="1" Grid.Column="3"
                             VerticalAlignment="Top"
-                            Margin="0,0,50,0">
+                            Margin="0,0,0,12.5">
                         <StackPanel>
                             <!--CheckBox Flag-->
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -220,18 +217,18 @@
                                     Checked="CheckBox_Checked"
                                     Unchecked="CheckBox_Unchecked">
                                     <Image Source="../Assets/Images/Flags/RussianFlag.png"
-                                           Width="65" Height="65"
+                                           Width="45" Height="45"
                                            HorizontalAlignment="Right"
                                            Margin="0,3,10,3"/>
                                 </CheckBox>
                             </StackPanel>
-                            
+
                             <RichTextBox x:Name="russianRTB" IsDocumentEnabled="True" Focusable="False" Cursor="Arrow"
                                          Background="#EBDEF0"
                                          BorderThickness="0"
-                                         Height="155"
+                                         Height="187.5"
                                          HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                                         Padding="20,25,20,20">
+                                         Padding="20,0,20,20">
                                 <RichTextBox.Resources>
                                     <Style TargetType="Hyperlink">
                                         <Setter Property="Foreground" Value="{StaticResource Secondary}" />
@@ -263,19 +260,18 @@
                     <!--Spanish Speaker-->
                     <Image Source="../Assets/Images/Speakers/speaker-3.png" Panel.ZIndex="1"
                            x:Name="SpanishSpeaker"
-                           Grid.Row="2" Grid.Column="2"
-                           Height="65" Width="65"
-                           Margin="-340,0,0,-250"
+                           Width="45" Height="45"
+                           Grid.Row="2" Grid.Column="3"
+                           HorizontalAlignment="Left" VerticalAlignment="Top"
+                           Margin="7.5,20,0,0"
                            MouseLeftButtonDown="Speak"
                            Style="{StaticResource ImageHoverStyle}"/>
-                    
+
                     <!--Spanish-->
                     <Border BorderBrush="{StaticResource Secondary}" BorderThickness="1.5"
-                            Grid.RowSpan="3"
-                            Grid.Row="2" Grid.Column="2"
-                            Height="230"
-                            VerticalAlignment="Top"
-                            Margin="0,240,50,0">
+                            Grid.Row="2" Grid.Column="3"
+                            Margin="0,12.5,0,0"
+                            VerticalAlignment="Top">
                         <StackPanel>
                             <!--CheckBox Flag-->
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -286,18 +282,17 @@
                                     Checked="CheckBox_Checked"
                                     Unchecked="CheckBox_Unchecked">
                                     <Image Source="../Assets/Images/Flags/SpanishFlag.png"
-                                           Width="65" Height="65"
+                                           Width="45" Height="45"
                                            HorizontalAlignment="Right"
                                            Margin="0,3,10,3"/>
                                 </CheckBox>
                             </StackPanel>
 
-                                         <!--Background="#EBDEF0"-->
                             <RichTextBox x:Name="spanishRTB" IsDocumentEnabled="True" Focusable="False" Cursor="Arrow"
                                          Background="#EBDEF0"
                                          BorderThickness="0"
-                                         Height="155"
-                                         Padding="20,25,20,20">
+                                         Height="187.5"
+                                         Padding="20,0,20,20">
                                 <RichTextBox.Resources>
                                     <Style TargetType="Hyperlink">
                                         <Setter Property="Foreground" Value="{StaticResource Secondary}" />
@@ -326,34 +321,60 @@
                         </Border.Resources>
                     </Border>
 
-                    <!--Start Buttons-->
-                    <Button
-                            Grid.RowSpan="2"
-                            Grid.Row="5" Grid.Column="0"
+                    <!--Left Buttons-->
+                    <Grid Grid.Row="3" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.15*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.15*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.15*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!--Generate Button-->
+                        <Button
+                            Grid.Column="1"
                             Width="225" Height="40"
                             FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
                             Click="buttonGenerateWord_Click"
-                        Margin="115,0,0,0"
                             Style="{StaticResource classicButton}" FontStretch="UltraCondensed">
-                        <StackPanel Orientation="Horizontal">
-                            <fa:IconImage Icon="Dice"
+                            <StackPanel Orientation="Horizontal">
+                                <fa:IconImage Icon="Dice"
                                 Margin="0,0,10,0"
                                 Style="{StaticResource classicButtonIcon}"/>
-                            <TextBlock Text="Roll new word"
+                                <TextBlock Text="Roll new word"
                                 Margin="0,0,5,0"
                                 HorizontalAlignment="Stretch" VerticalAlignment="Center"
                                 FontSize="22" FontFamily="Bahnschrift SemiLight"/>
-                        </StackPanel>
-                    </Button>
+                            </StackPanel>
+                        </Button>
 
-                    <!--Exit Buttons-->
+                        <!--Favorite Button-->
+                        <Button
+                            Grid.Column="3"
+                            Width="225" Height="40"
+                            FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
+                            Click="buttonFavorite_Click"
+                            Style="{StaticResource classicButton}" FontStretch="UltraCondensed">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:IconImage Icon="Heart"
+                                Margin="0,0,10,0"
+                                Width="20" Height="20"
+                                Style="{StaticResource classicButtonIcon}"/>
+                                <TextBlock Text="Save Word"
+                                Margin="0,0,5,0"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                FontSize="22" FontFamily="Bahnschrift SemiLight"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <!--Main Menu Button-->
                     <Button
-                            Grid.RowSpan="2"
-                            Grid.Row="5" Grid.Column="1"
+                            Grid.Row="3" Grid.Column="3"
                             Width="225" Height="40"
                             FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
                             Click="buttonBack_Click"
-                        Margin="0,0,115,0"
                             Style="{StaticResource classicButton}" FontStretch="UltraCondensed">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="ArrowLeftLong"

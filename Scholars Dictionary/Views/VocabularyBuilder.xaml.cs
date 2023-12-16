@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using Newtonsoft.Json.Linq;
 using Scholars_Dictionary.Enums;
 using Scholars_Dictionary.Models;
 using Scholars_Dictionary.Services;
@@ -17,6 +16,7 @@ namespace Scholars_Dictionary.Views
     /// </summary>
     public partial class VocabularyBuilder : Window
     {
+        #region Properties
         private bool _isRussianChecked;
         private bool _isSpanishChecked;
 
@@ -34,6 +34,7 @@ namespace Scholars_Dictionary.Views
         public string CurrentEnglishWord { get; set; } = "";
         public string CurrentRussianWord { get; set; } = "";
         public string CurrentSpanishWord { get; set; } = "";
+        #endregion
 
         public VocabularyBuilder()
         {
@@ -47,7 +48,7 @@ namespace Scholars_Dictionary.Views
             searchTxtBox.Foreground = Brushes.Gray;
         }
 
-        // Buttons
+        #region Buttons
         private void buttonGenerateWord_Click(object sender, RoutedEventArgs e)
         {
             LoadWord();
@@ -70,11 +71,13 @@ namespace Scholars_Dictionary.Views
             }
 
             TranslateWord(wordDefinition);
-            ShowResultsEng(wordDefinition);
+            var doc = FormatWordDefinition(wordDefinition);
+            englishRTB.Document = doc;
             EnglishSpeaker.Visibility = Visibility.Visible;
         }
+        #endregion
 
-        // Word Definition
+        #region Definition
         private void ShowUndefinedResult(WordDefinition wordDefinition)
         {
             FlowDocument flowDocument = new FlowDocument();
@@ -91,45 +94,46 @@ namespace Scholars_Dictionary.Views
             flowDocument.Blocks.Add(paragraph);
             englishRTB.Document = flowDocument;
         }
-        private void ShowResultsEng(WordDefinition wordDefinition)
+
+        private FlowDocument FormatWordDefinition(WordDefinition wordDefinition, SupportedLanguages language = SupportedLanguages.ENGLISH)
         {
-            // Create a new FlowDocument
+            double wordSize = language.Equals(SupportedLanguages.ENGLISH) ? 22 : 20;
+            double typeSize = language.Equals(SupportedLanguages.ENGLISH) ? 12 : 11;
+            double definitionSize = language.Equals(SupportedLanguages.ENGLISH) ? 15 : 13.5;
             FlowDocument flowDocument = new FlowDocument();
 
-            // Create a Paragraph
             Paragraph paragraph = new Paragraph();
             paragraph.FontFamily = new System.Windows.Media.FontFamily("Bahnschrift SemiLight");
 
             int index = 0;
             foreach (var type in wordDefinition.Types)
             {
-                // Add Runs with different formatting
                 if (index != 0)
                 {
                     paragraph.Inlines.Add(new LineBreak());
                 }
-                Run normalRun = new Run(wordDefinition.Word) { FontSize = 22 };
+                Run normalRun = new Run(wordDefinition.Word) { FontSize = wordSize };
                 paragraph.Inlines.Add(normalRun);
 
-                Run superscriptRun = new Run($" ({EnumHelper.WordTypeString(type)})") { FontSize = 12 };
+                Run superscriptRun = new Run($" ({EnumHelper.WordTypeString(type)})") { FontSize = typeSize };
                 superscriptRun.BaselineAlignment = BaselineAlignment.Superscript;
                 paragraph.Inlines.Add(superscriptRun);
 
 
-                FormatText(paragraph, wordDefinition.Definitions[index]);
+                FormatDefinition(paragraph, wordDefinition.Definitions[index], definitionSize);
 
                 index++;
             }
 
             paragraph.Inlines.Add(new LineBreak());
-            FormatRelatedWords(paragraph, wordDefinition.RelatedWords);
+            FormatRelatedWords(paragraph, wordDefinition.RelatedWords, language);
 
             flowDocument.Blocks.Add(paragraph);
 
-            englishRTB.Document = flowDocument;
+            return flowDocument;
         }
 
-        private void FormatText(Paragraph paragraph, string inputString)
+        private void FormatDefinition(Paragraph paragraph, string inputString, double defSize)
         {
             string[] bulletPoints = inputString.Split(new[] { " • " }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -153,7 +157,7 @@ namespace Scholars_Dictionary.Views
                                 paragraph.Inlines.Add("-");
                             }
                             paragraph.Inlines.Add(new LineBreak());
-                            paragraph.Inlines.Add(new Run($"\t{line}") { FontStyle = FontStyles.Italic, FontSize = 15, FontFamily = new System.Windows.Media.FontFamily("Bahnschrift SemiLight") });
+                            paragraph.Inlines.Add(new Run($"\t{line}") { FontStyle = FontStyles.Italic, FontSize = defSize, FontFamily = new System.Windows.Media.FontFamily("Bahnschrift SemiLight") });
                             index++;
                         }
                     }
@@ -169,7 +173,7 @@ namespace Scholars_Dictionary.Views
                             }
                             paragraph.Inlines.Add(new LineBreak());
                             string bullet = line == lines[0] ? "•" : " ";
-                            paragraph.Inlines.Add(new Run($"\t{bullet} {line}") { FontWeight = FontWeights.Bold, FontSize = 15, FontFamily = new System.Windows.Media.FontFamily("Bahnschrift SemiLight") });
+                            paragraph.Inlines.Add(new Run($"\t{bullet} {line}") { FontWeight = FontWeights.Bold, FontSize = defSize, FontFamily = new System.Windows.Media.FontFamily("Bahnschrift SemiLight") });
                             index++;
                         }
                     }
@@ -177,7 +181,7 @@ namespace Scholars_Dictionary.Views
             }
         }
 
-        private void FormatRelatedWords(Paragraph paragraph, List<string> relatedWords)
+        private void FormatRelatedWords(Paragraph paragraph, List<string> relatedWords, SupportedLanguages language)
         {
             paragraph.FontFamily = new System.Windows.Media.FontFamily("Bahnschrift SemiLight");
             int index = 0;
@@ -187,7 +191,17 @@ namespace Scholars_Dictionary.Views
                 {
                     paragraph.Inlines.Add(", ");
                 }
-                AddClickableLink(paragraph, word, () => { LoadWord(word); });
+                AddClickableLink(paragraph, word, async () =>  {
+                    if (language.Equals(SupportedLanguages.ENGLISH))
+                    {
+                        LoadWord(word);
+                    }
+                    else
+                    {
+                        var translatedWord = await AzureTranslateAPI.TranslateText(word, language.GetStringValue(), SupportedLanguages.ENGLISH.GetStringValue());
+                        LoadWord(translatedWord);
+                    }
+                });
                 index++;
             }
         }
@@ -214,18 +228,21 @@ namespace Scholars_Dictionary.Views
 
             return lines.ToArray();
         }
+        #endregion
 
-        // Translating
+        #region Translating
         private async void TranslateWord(WordDefinition wordDefinition)
         {
             if (IsRussianChecked)
             {
-                var response = await AzureTranslateAPI.TranslateText(wordDefinition.Word, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.RUSSIAN.GetStringValue());
-                var translatedText = (JArray.Parse(response))[0]["translations"][0]["text"].ToString();
-                ShowResultTranslate(translatedText, SupportedLanguages.RUSSIAN);
+                if (russianRTB.Document.Blocks.Count == 0 && wordDefinition.TryDefineSelf())
+                {
+                    var translatedWordDefinition = await AzureTranslateAPI.TranslateWordDefinition(wordDefinition, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.RUSSIAN.GetStringValue());
+                    ShowResultTranslate(translatedWordDefinition, SupportedLanguages.RUSSIAN);
 
-                CurrentRussianWord = translatedText;
-                RussianSpeaker.Visibility = Visibility.Visible;
+                    CurrentRussianWord = translatedWordDefinition.Word;
+                    RussianSpeaker.Visibility = Visibility.Visible;
+                }
             }
             else
             {
@@ -234,12 +251,14 @@ namespace Scholars_Dictionary.Views
             }
             if (IsSpanishChecked)
             {
-                var response = await AzureTranslateAPI.TranslateText(wordDefinition.Word, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.SPANISH.GetStringValue());
-                var translatedText = (JArray.Parse(response))[0]["translations"][0]["text"].ToString();
-                ShowResultTranslate(translatedText, SupportedLanguages.SPANISH);
+                if (spanishRTB.Document.Blocks.Count == 0 && wordDefinition.TryDefineSelf())
+                {
+                    var translatedWordDefinition = await AzureTranslateAPI.TranslateWordDefinition(wordDefinition, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.SPANISH.GetStringValue());
+                    ShowResultTranslate(translatedWordDefinition, SupportedLanguages.SPANISH);
 
-                CurrentSpanishWord = translatedText;
-                SpanishSpeaker.Visibility = Visibility.Visible;
+                    CurrentSpanishWord = translatedWordDefinition.Word;
+                    SpanishSpeaker.Visibility = Visibility.Visible;
+                }
             }
             else
             {
@@ -248,28 +267,32 @@ namespace Scholars_Dictionary.Views
             }
         }
 
-        private void ShowResultTranslate(string translatedText, SupportedLanguages language)
+        private void ShowResultTranslate(WordDefinition translatedWordDefinition, SupportedLanguages language)
         {
             var document = new FlowDocument();
             var paragraph = new Paragraph();
             paragraph.TextAlignment = TextAlignment.Center;
             paragraph.FontFamily = new System.Windows.Media.FontFamily("Bahnschrift SemiLight");
-            Run run = new Run(translatedText) { FontSize = 22 };
+            Run run = new Run(translatedWordDefinition.Word) { FontSize = 22 };
             paragraph.Inlines.Add(run);
             document.Blocks.Add(paragraph);
+
+            var doc = FormatWordDefinition(translatedWordDefinition, language);
 
             switch (language)
             {
                 case SupportedLanguages.RUSSIAN:
-                    russianRTB.Document = document;
+                    russianRTB.Document = doc;
                     break;
                 case SupportedLanguages.SPANISH:
-                    spanishRTB.Document = document;
+                    spanishRTB.Document = doc;
                     break;
             }
-        }
 
-        // Voice
+        }
+        #endregion
+
+        #region Voice
         private void Speak(object sender, MouseButtonEventArgs e)
         {
             if (sender is Image img)
@@ -288,8 +311,9 @@ namespace Scholars_Dictionary.Views
                 }
             }
         }
+        #endregion
 
-        // Language Selection
+        #region Language Selection
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox checkBox)
@@ -328,24 +352,26 @@ namespace Scholars_Dictionary.Views
                 }
             }
         }
+        #endregion
 
-        // Helper Methods
+        #region Helper Methods
         private void ClearScreen(bool clearEnglish = false, bool clearSearch = false)
         {
             if (clearEnglish)
             {
                 englishRTB.Document.Blocks.Clear();
             }
-            spanishRTB.Document.Blocks.Clear();
             russianRTB.Document.Blocks.Clear();
+            spanishRTB.Document.Blocks.Clear();
 
             if (clearSearch)
             {
                 ClearSearch();
             }
         }
+        #endregion
 
-        // Top Bar
+        #region Top Bar
         private void buttonMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
@@ -366,8 +392,9 @@ namespace Scholars_Dictionary.Views
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
         }
+        #endregion
 
-        // Search
+        #region Search
         private void SearchGotFocus(object sender, RoutedEventArgs e)
         {
             TextBox searchBox = (TextBox)sender;
@@ -429,5 +456,13 @@ namespace Scholars_Dictionary.Views
             searchTxtBox.Text = "Search...";
             searchTxtBox.Foreground = Brushes.Gray;
         }
+        #endregion
+
+        #region Favorite
+        private void buttonFavorite_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        #endregion
     }
 }

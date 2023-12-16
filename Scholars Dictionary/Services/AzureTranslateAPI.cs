@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Scholars_Dictionary.Models;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -30,8 +32,26 @@ namespace Scholars_Dictionary.Services
 
                 HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
                 string result = await response.Content.ReadAsStringAsync();
-                return result;
+                return (JArray.Parse(result))[0]["translations"][0]["text"].ToString();
             }
+        }
+
+        public static async Task<WordDefinition> TranslateWordDefinition(WordDefinition wordDefinition, string sourceLanguage, string targetLanguage)
+        {
+            WordDefinition translatedWordDefinition = new WordDefinition();
+
+            translatedWordDefinition.Word = await TranslateText(wordDefinition.Word, sourceLanguage, targetLanguage);
+            foreach (var definition in wordDefinition.Definitions)
+            {
+                translatedWordDefinition.Definitions.Add(await TranslateText(definition, sourceLanguage, targetLanguage));
+            }
+            translatedWordDefinition.Types.AddRange(wordDefinition.Types);
+            foreach(var relatedWord in wordDefinition.RelatedWords)
+            {
+                translatedWordDefinition.RelatedWords.Add(await TranslateText(relatedWord, sourceLanguage, targetLanguage));
+            }
+
+            return translatedWordDefinition;
         }
     }
 }

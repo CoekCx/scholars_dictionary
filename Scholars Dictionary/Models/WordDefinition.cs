@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Scholars_Dictionary.Enums;
+using Scholars_Dictionary.Services;
 
 namespace Scholars_Dictionary.Models
 {
@@ -21,6 +22,29 @@ namespace Scholars_Dictionary.Models
         public bool IsDefined()
         {
             return Definitions.Count > 0;
+        }
+
+        public bool TryDefineSelf()
+        {
+            if (IsDefined())
+            {
+                return true;
+            }
+            if(string.IsNullOrEmpty(Word))
+            {
+                return false;
+            }
+
+            var wordDefinition = DefinitionService.GetDefinition(Word);
+            if(!wordDefinition.IsDefined())
+            {
+                return false;
+            }
+
+            Definitions.AddRange(wordDefinition.Definitions);
+            Types.AddRange(wordDefinition.Types);
+            RelatedWords.AddRange(wordDefinition.RelatedWords);
+            return true;
         }
     }
 }
