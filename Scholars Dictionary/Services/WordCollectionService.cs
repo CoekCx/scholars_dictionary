@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Scholars_Dictionary.Constants;
+using System.Linq;
 
 namespace Scholars_Dictionary.Services
 {
@@ -24,7 +25,7 @@ namespace Scholars_Dictionary.Services
             }
 
             WordCollection.Collection[language][word] = definition;
-            LoggingService.Info($"Successfully added the word \"{word}\" in {language.GetStringValue()}");
+            LoggingService.Info($"[WORD-COLLECTION-SERVICE]: Successfully added the word \"{word}\" in {language.GetStringValue()}");
             SaveCollection();
         }
 
@@ -36,7 +37,7 @@ namespace Scholars_Dictionary.Services
             WordCollection.Collection[SupportedLanguages.ENGLISH].Remove(word);
             WordCollection.Collection[SupportedLanguages.RUSSIAN].Remove(word);
             WordCollection.Collection[SupportedLanguages.SPANISH].Remove(word);
-            LoggingService.Info($"Successfully removed the word \"{word}\"");
+            LoggingService.Info($"[WORD-COLLECTION-SERVICE]: Successfully removed the word \"{word}\"");
             SaveCollection();
         }
 
@@ -61,7 +62,8 @@ namespace Scholars_Dictionary.Services
                                      };
                     }
                     var wordCount = WordCollection.Collection[SupportedLanguages.ENGLISH].Count;
-                    LoggingService.Info($"Successfully loaded word collection with {wordCount} words");
+                    LoggingService.Info($"[WORD-COLLECTION-SERVICE]: Successfully loaded word collection with {wordCount} words");
+
                 }
                 else
                 {
@@ -70,8 +72,52 @@ namespace Scholars_Dictionary.Services
             }
             catch (Exception ex)
             {
-                LoggingService.Error("An error occurred while loading the word collection", ex);
+                LoggingService.Error("[WORD-COLLECTION-SERVICE]: An error occurred while loading the word collection", ex);
             }
+        }
+
+        /// <summary>
+        /// Performs a check for any incomplete data, patches everything it can and removes anything it can't
+        /// </summary>
+        public async static void SafeCheckCollection()
+        {
+            var englishKeys = WordCollection.Collection[SupportedLanguages.ENGLISH].Keys;
+
+            // Path up missing translations
+            foreach (var word in englishKeys)
+            {
+                if (!WordCollection.Collection[SupportedLanguages.RUSSIAN].ContainsKey(word))
+                {
+                    var wordDefinition = DefinitionService.GetDefinition(word);
+                    var translatedWordDefinition = await AzureTranslateAPI.TranslateWordDefinition(wordDefinition, SupportedLanguages.ENGLISH, SupportedLanguages.RUSSIAN);
+                    AddWord(SupportedLanguages.RUSSIAN, word, translatedWordDefinition);
+                    LoggingService.Info($"[WORD-COLLECTION-SERVICE]: Patched word definition for {word} in {SupportedLanguages.RUSSIAN.GetTypeCode()}");
+                }
+                if (!WordCollection.Collection[SupportedLanguages.SPANISH].ContainsKey(word))
+                {
+                    var wordDefinition = DefinitionService.GetDefinition(word);
+                    var translatedWordDefinition = await AzureTranslateAPI.TranslateWordDefinition(wordDefinition, SupportedLanguages.ENGLISH, SupportedLanguages.SPANISH);
+                    AddWord(SupportedLanguages.SPANISH, word, translatedWordDefinition);
+                    LoggingService.Info($"[WORD-COLLECTION-SERVICE]: Patched word definition for {word} in {SupportedLanguages.SPANISH.GetTypeCode()}");
+                }
+            }
+
+            var russianKeys = WordCollection.Collection[SupportedLanguages.RUSSIAN].Keys;
+            var spanishKeys = WordCollection.Collection[SupportedLanguages.SPANISH].Keys;
+
+            foreach (var word in russianKeys.Except(englishKeys).ToList())
+            {
+                WordCollection.Collection[SupportedLanguages.RUSSIAN].Remove(word);
+                LoggingService.Info($"[WORD-COLLECTION-SERVICE]: Removed word definition for {word} in {SupportedLanguages.RUSSIAN.GetTypeCode()}");
+            }
+            foreach(var word in spanishKeys.Except(englishKeys).ToList())
+            {
+                WordCollection.Collection[SupportedLanguages.SPANISH].Remove(word);
+                LoggingService.Info($"[WORD-COLLECTION-SERVICE]: Removed word definition for {word} in {SupportedLanguages.SPANISH.GetTypeCode()}");
+            }
+
+            SaveCollection();
+            LoggingService.Info($"[WORD-COLLECTION-SERVICE]: Successfully performed safe check on data");
         }
 
         /// <summary>
@@ -87,11 +133,11 @@ namespace Scholars_Dictionary.Services
                     var serializer = new JsonSerializer();
                     serializer.Serialize(jsonWriter, WordCollection.Collection);
                 }
-                LoggingService.Info($"Saved word collection");
+                LoggingService.Info($"[WORD-COLLECTION-SERVICE]: Saved word collection");
             }
             catch (Exception ex)
             {
-                LoggingService.Error("An error occurred while saving the word collection", ex);
+                LoggingService.Error("[WORD-COLLECTION-SERVICE]: An error occurred while saving the word collection", ex);
             }
         }
 
@@ -100,7 +146,7 @@ namespace Scholars_Dictionary.Services
         /// </summary>
         public static void ResetCollection()
         {
-            LoggingService.Info("Resetting the word collection");
+            LoggingService.Info("[WORD-COLLECTION-SERVICE]: Resetting the word collection");
             WordCollection.Collection = new Dictionary<SupportedLanguages, Dictionary<string, WordDefinition>>();
             SaveCollection();
         }

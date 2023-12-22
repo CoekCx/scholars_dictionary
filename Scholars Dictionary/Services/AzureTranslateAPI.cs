@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Scholars_Dictionary.Enums;
 using Scholars_Dictionary.Models;
 using System;
 using System.Net.Http;
@@ -36,9 +37,11 @@ namespace Scholars_Dictionary.Services
             }
         }
 
-        public static async Task<WordDefinition> TranslateWordDefinition(WordDefinition wordDefinition, string sourceLanguage, string targetLanguage)
+        public static async Task<WordDefinition> TranslateWordDefinition(WordDefinition wordDefinition, SupportedLanguages srcLanguage, SupportedLanguages trgLanguage)
         {
             WordDefinition translatedWordDefinition = new WordDefinition();
+            var sourceLanguage = srcLanguage.GetStringValue();
+            var targetLanguage = trgLanguage.GetStringValue();
 
             translatedWordDefinition.Word = await TranslateText(wordDefinition.Word, sourceLanguage, targetLanguage);
             foreach (var definition in wordDefinition.Definitions)

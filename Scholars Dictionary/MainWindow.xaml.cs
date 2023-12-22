@@ -12,30 +12,52 @@ namespace Scholars_Dictionary
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static double NewLeft { get; set; }
+        public static double NewTop { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
 
             WordCollectionService.LoadCollection();
+            WordCollectionService.SafeCheckCollection();
         }
 
         // Menu Buttons
         private void buttonStart_Click(object sender, RoutedEventArgs e)
         {
             var window = new VocabularyBuilder();
+
+            // Set the position of the new window
+            window.Left = Left;
+            window.Top = Top;
+
             Hide();
             window.ShowDialog();
-            try
-            {
-                Show();
-            }
-            catch (Exception) { }
+
+            // Show the current window at its original position
+            Left = NewLeft;
+            Top = NewTop;
+            Show();
         }
 
         private void buttonMyDictionary_Click(object sender, RoutedEventArgs e)
         {
+            var window = new MyDictionary();
 
+            // Set the position of the new window
+            window.Left = Left;
+            window.Top = Top;
+
+            Hide();
+            window.ShowDialog();
+
+            // Show the current window at its original position
+            Left = NewLeft;
+            Top = NewTop;
+            Show();
         }
+
 
         // Top Bar
         private void buttonMinimize_Click(object sender, RoutedEventArgs e)

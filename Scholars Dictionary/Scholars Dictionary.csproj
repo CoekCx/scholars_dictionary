@@ -83,6 +83,7 @@
     <Compile Include="Constants\PathConstants.cs" />
     <Compile Include="Enums\EnumHelper.cs" />
     <Compile Include="Enums\WordType.cs" />
+    <Compile Include="Models\LanguageEntry.cs" />
     <Compile Include="Models\WordCollection.cs" />
     <Compile Include="Services\WordCollectionService.cs" />
     <Compile Include="Models\WordDefinition.cs" />
@@ -91,9 +92,16 @@
     <Compile Include="Services\AzureTranslateAPI.cs" />
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\WordService.cs" />
+    <Compile Include="Views\MyDictionary.xaml.cs">
+      <DependentUpon>MyDictionary.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\VocabularyBuilder.xaml.cs">
       <DependentUpon>VocabularyBuilder.xaml</DependentUpon>
     </Compile>
+    <Page Include="Assets\Styles\TableStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Styles\ImageAnimationStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -122,6 +130,10 @@
     <Page Include="Assets\Styles\UIColors.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MyDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\VocabularyBuilder.xaml">
       <SubType>Designer</SubType>

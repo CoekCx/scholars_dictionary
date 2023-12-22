@@ -53,10 +53,10 @@ namespace Scholars_Dictionary.Views
         #region Buttons
         private void buttonGenerateWord_Click(object sender, RoutedEventArgs e)
         {
-            LoadWord();
+            LoadWordAsync();
         }
 
-        private void LoadWord(string word = "", bool clearSearch = false)
+        private async Task LoadWordAsync(string word = "", bool clearSearch = false)
         {
             ClearScreen(clearSearch: clearSearch);
 
@@ -73,10 +73,10 @@ namespace Scholars_Dictionary.Views
                 return;
             }
 
-            TranslateWord(wordDefinition);
             var doc = FormatWordDefinition(wordDefinition);
             englishRTB.Document = doc;
             EnglishSpeaker.Visibility = Visibility.Visible;
+            await TranslateWord(wordDefinition);
         }
         #endregion
 
@@ -197,12 +197,12 @@ namespace Scholars_Dictionary.Views
                 AddClickableLink(paragraph, word, async () =>  {
                     if (language.Equals(SupportedLanguages.ENGLISH))
                     {
-                        LoadWord(word);
+                        LoadWordAsync(word);
                     }
                     else
                     {
                         var translatedWord = await AzureTranslateAPI.TranslateText(word, language.GetStringValue(), SupportedLanguages.ENGLISH.GetStringValue());
-                        LoadWord(translatedWord);
+                        LoadWordAsync(translatedWord);
                     }
                 });
                 index++;
@@ -234,13 +234,13 @@ namespace Scholars_Dictionary.Views
         #endregion
 
         #region Translating
-        private async void TranslateWord(WordDefinition wordDefinition)
+        private async Task TranslateWord(WordDefinition wordDefinition)
         {
             if (IsRussianChecked)
             {
                 if (russianRTB.Document.Blocks.Count == 0 && wordDefinition.TryDefineSelf())
                 {
-                    var translatedWordDefinition = await AzureTranslateAPI.TranslateWordDefinition(wordDefinition, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.RUSSIAN.GetStringValue());
+                    var translatedWordDefinition = await AzureTranslateAPI.TranslateWordDefinition(wordDefinition, SupportedLanguages.ENGLISH, SupportedLanguages.RUSSIAN);
                     ShowResultTranslate(translatedWordDefinition, SupportedLanguages.RUSSIAN);
 
                     CurrentRussianWord = translatedWordDefinition;
@@ -256,7 +256,7 @@ namespace Scholars_Dictionary.Views
             {
                 if (spanishRTB.Document.Blocks.Count == 0 && wordDefinition.TryDefineSelf())
                 {
-                    var translatedWordDefinition = await AzureTranslateAPI.TranslateWordDefinition(wordDefinition, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.SPANISH.GetStringValue());
+                    var translatedWordDefinition = await AzureTranslateAPI.TranslateWordDefinition(wordDefinition, SupportedLanguages.ENGLISH, SupportedLanguages.SPANISH);
                     ShowResultTranslate(translatedWordDefinition, SupportedLanguages.SPANISH);
 
                     CurrentSpanishWord = translatedWordDefinition;
@@ -317,7 +317,7 @@ namespace Scholars_Dictionary.Views
         #endregion
 
         #region Language Selection
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        private async void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox checkBox)
             {
@@ -332,7 +332,7 @@ namespace Scholars_Dictionary.Views
 
                 if (!String.IsNullOrEmpty(CurrentEnglishWord.Word))
                 {
-                    TranslateWord(CurrentEnglishWord);
+                    await TranslateWord(CurrentEnglishWord);
                 }
             }
         }
@@ -389,6 +389,8 @@ namespace Scholars_Dictionary.Views
 
         private void buttonBack_Click(object sender, RoutedEventArgs e)
         {
+            MainWindow.NewLeft = Left;
+            MainWindow.NewTop = Top;
             this.Close();
         }
 
@@ -451,7 +453,7 @@ namespace Scholars_Dictionary.Views
         {
             string searchTerm = searchTxtBox.Text;
 
-            LoadWord(searchTerm, true);
+            LoadWordAsync(searchTerm, true);
 
             SearchBtn.Focus();
         }
@@ -483,6 +485,10 @@ namespace Scholars_Dictionary.Views
                 return;
             }
 
+            SearchBtn.IsEnabled = false;
+            GenerateBtn.IsEnabled = false;
+            FavoriteBtn.IsEnabled = false;
+
             bool isSaved = FavoriteTxtBlk.Text == "Saved";
             if (!isSaved)
             {
@@ -498,6 +504,10 @@ namespace Scholars_Dictionary.Views
                 WordCollectionService.RemoveWord(CurrentEnglishWord.Word);
                 UnsetFavoritedButton();
             }
+
+            SearchBtn.IsEnabled = true;
+            GenerateBtn.IsEnabled = true;
+            FavoriteBtn.IsEnabled = true;
         }
 
         private void SetFavoritedButton()
@@ -531,7 +541,7 @@ namespace Scholars_Dictionary.Views
             }
             else
             {
-                CurrentRussianWord = await AzureTranslateAPI.TranslateWordDefinition(CurrentEnglishWord, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.RUSSIAN.GetStringValue());
+                CurrentRussianWord = await AzureTranslateAPI.TranslateWordDefinition(CurrentEnglishWord, SupportedLanguages.ENGLISH, SupportedLanguages.RUSSIAN);
                 if (CurrentRussianWord.IsDefined() || (!CurrentRussianWord.IsDefined() && CurrentRussianWord.TryDefineSelf()))
                 {
                     WordCollectionService.AddWord(SupportedLanguages.RUSSIAN, CurrentEnglishWord.Word, CurrentRussianWord);
@@ -543,7 +553,7 @@ namespace Scholars_Dictionary.Views
             }
             else
             {
-                CurrentSpanishWord = await AzureTranslateAPI.TranslateWordDefinition(CurrentEnglishWord, SupportedLanguages.ENGLISH.GetStringValue(), SupportedLanguages.SPANISH.GetStringValue());
+                CurrentSpanishWord = await AzureTranslateAPI.TranslateWordDefinition(CurrentEnglishWord, SupportedLanguages.ENGLISH, SupportedLanguages.SPANISH);
                 if (CurrentSpanishWord.IsDefined() || (!CurrentSpanishWord.IsDefined() && CurrentSpanishWord.TryDefineSelf()))
                 {
                     WordCollectionService.AddWord(SupportedLanguages.SPANISH, CurrentEnglishWord.Word, CurrentSpanishWord);

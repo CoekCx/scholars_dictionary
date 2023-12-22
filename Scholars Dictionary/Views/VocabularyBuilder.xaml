@@ -7,7 +7,6 @@
         xmlns:local="clr-namespace:Scholars_Dictionary.Views"
         MouseDown="Window_MouseDown"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
-        WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="750" Width="1333">
     <Window.Resources>
         <ResourceDictionary>
@@ -332,7 +331,7 @@
                         </Grid.ColumnDefinitions>
                         
                         <!--Generate Button-->
-                        <Button
+                        <Button x:Name="GenerateBtn"
                             Grid.Column="1"
                             Width="225" Height="40"
                             FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
@@ -350,7 +349,7 @@
                         </Button>
 
                         <!--Favorite Button-->
-                        <Button
+                        <Button x:Name="FavoriteBtn"
                             Grid.Column="3"
                             Width="225" Height="40"
                             FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
