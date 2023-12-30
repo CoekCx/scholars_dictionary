@@ -92,10 +92,10 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="0.5*"/>
                         <RowDefinition Height="4*"/>
-                        <RowDefinition Height="0.5*"/>
-                        <RowDefinition Height="1.25*"/>
-                        <RowDefinition Height="1.25*"/>
-                        <RowDefinition Height="1.25*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
                         <RowDefinition Height="0.5*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -119,7 +119,7 @@
                            />-->
 
                     <!--Explore Buttons-->
-                    <Button Grid.Row="3" Grid.Column="1"
+                    <Button Grid.Row="2" Grid.Column="1"
                             Width="225" Height="40"
                             FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
                             Click="buttonStart_Click"
@@ -136,7 +136,25 @@
                         </StackPanel>
                     </Button>
 
-                    <!--Exit Button-->
+                    <!--My Collections Button-->
+                    <Button Grid.Row="3" Grid.Column="1"
+                            Width="225" Height="40"
+                            FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"
+                            Click="buttonMyCollections_Click"
+                            Style="{StaticResource classicButton}" FontStretch="UltraCondensed">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Bookmark"
+                                Margin="0,0,5,0"
+                                Width="18" Height="18"
+                                Style="{StaticResource classicButtonIcon}"/>
+                            <TextBlock Text="My Collections"
+                                    Margin="0,0,5,0"
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                    FontSize="22" FontFamily="Bahnschrift SemiLight"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!--My Dictionary Button-->
                     <Button Grid.Row="4" Grid.Column="1"
                             Width="225" Height="40"
                             FontSize="15" FontFamily="Bahnschrift SemiLight" Foreground="Black"

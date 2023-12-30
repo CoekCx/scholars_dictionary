@@ -21,6 +21,7 @@ namespace Scholars_Dictionary
 
             WordCollectionService.LoadCollection();
             WordCollectionService.SafeCheckCollection();
+            UserCollectionService.LoadCollections();
         }
 
         // Menu Buttons
@@ -39,6 +40,27 @@ namespace Scholars_Dictionary
             Left = NewLeft;
             Top = NewTop;
             Show();
+        }
+
+        private void buttonMyCollections_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new MyCollections();
+
+            // Set the position of the new window
+            window.Left = Left;
+            window.Top = Top;
+
+            Hide();
+            window.ShowDialog();
+
+            // Show the current window at its original position
+            Left = NewLeft;
+            Top = NewTop;
+            try
+            {
+                Show();
+            }
+            catch(Exception) { }
         }
 
         private void buttonMyDictionary_Click(object sender, RoutedEventArgs e)

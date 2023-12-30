@@ -84,7 +84,11 @@
     <Compile Include="Enums\EnumHelper.cs" />
     <Compile Include="Enums\WordType.cs" />
     <Compile Include="Models\LanguageEntry.cs" />
+    <Compile Include="Models\UserCollection.cs" />
+    <Compile Include="Models\UserCollectionTableModel.cs" />
     <Compile Include="Models\WordCollection.cs" />
+    <Compile Include="Models\WordTableModel.cs" />
+    <Compile Include="Services\UserCollectionService.cs" />
     <Compile Include="Services\WordCollectionService.cs" />
     <Compile Include="Models\WordDefinition.cs" />
     <Compile Include="Services\AzureTTSAPI.cs" />
@@ -92,6 +96,12 @@
     <Compile Include="Services\AzureTranslateAPI.cs" />
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\WordService.cs" />
+    <Compile Include="Views\CollectionView.xaml.cs">
+      <DependentUpon>CollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MyCollections.xaml.cs">
+      <DependentUpon>MyCollections.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MyDictionary.xaml.cs">
       <DependentUpon>MyDictionary.xaml</DependentUpon>
     </Compile>
@@ -130,6 +140,14 @@
     <Page Include="Assets\Styles\UIColors.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\CollectionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MyCollections.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MyDictionary.xaml">
       <SubType>Designer</SubType>
