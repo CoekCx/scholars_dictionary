@@ -167,14 +167,14 @@ namespace Scholars_Dictionary.Views
                 nameBorder.BorderBrush = Brushes.Red;
                 nameBorder.BorderThickness = new Thickness(1.5);
 
-                nameErrorLabel.Content = "Project Name Already Exists!";
+                nameErrorLabel.Content = "A collection with that name already exists!";
             }
             else if (!IsNewCollection && allCollectionNames.Contains(nameTxtBox.Text) && !nameTxtBox.Text.Equals(existingUserCollection.Name))
             {
                 nameTxtBox.BorderBrush = Brushes.Red;
                 nameBorder.BorderThickness = new Thickness(1.5);
 
-                nameErrorLabel.Content = "Project Name Already Exists!";
+                nameErrorLabel.Content = "A collection with that name already exists!";
             }
             else
             {
